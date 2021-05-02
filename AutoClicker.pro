@@ -19,22 +19,18 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-QMAKE_SPEC_T = $$[QMAKE_SPEC]#see https://stackoverflow.com/questions/25916619/qmake-how-to-figure-out-host-platform-and-target-platform-when-cross-compiling
 
-contains(QMAKE_SPEC_T,.*win32.*){
-    HOST_PLATFORM=WIN
-    IS_WIN = 1
+win32 {#remember to add the qt dlls
+     QMAKE_LINK += -static-libstdc++
+     QMAKE_CXXFLAGS += -static-libstdc++
+ }
+
+macx {
+     
 }
 
-contains(QMAKE_SPEC_T,.*macx.*){
-    HOST_PLATFORM=MAC
-    IS_MAC = 1
-}
-
-contains(QMAKE_SPEC_T,.*linux.*){
-    HOST_PLATFORM=LINUX
-    IS_LINUX = 1
-    QMAKE_LINK += -lX11
+unix:!macx {
+     QMAKE_LINK += -lX11
 }
 
 

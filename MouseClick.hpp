@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <windows.h>
     #elif __APPLE__ || __MACH__
-#include <mach-o/dyld.h>
+//#include <mach-o/dyld.h>
+#include <unistd.h>
+#include <ApplicationServices/ApplicationServices.h>
     #elif __linux__//https://www.linuxquestions.org/questions/programming-9/simulating-a-mouse-click-594576/
 #include <stdio.h>
 #include <stdlib.h>
@@ -95,7 +97,28 @@ void mouseLeftClick() {
 
     #elif __APPLE__ || __MACH__
 
+    CGEventRef event = CGEventCreate(nil);//supposedly gets the mouse position according to https://stackoverflow.com/questions/2262516/getting-global-mouse-position-in-mac-os-x
+    CGPoint loc = CGEventGetLocation(event);
+    CFRelease(event);
 
+    CGEventRef click_down = CGEventCreateMouseEvent(//https://stackoverflow.com/questions/12123150/how-to-programmatically-simulate-a-mouse-click-without-moving-mouse-in-cocoa
+    	NULL, kCGEventLeftMouseDown,
+    	loc,
+    	kCGMouseButtonLeft
+  	);
+
+    CGEventRef click_up = CGEventCreateMouseEvent(
+    	NULL, kCGEventLeftMouseUp,
+    	loc,
+    	kCGMouseButtonLeft
+  	);
+
+    CGEventPost(kCGHIDEventTap, click_down);
+    CGEventPost(kCGHIDEventTap, click_up);
+
+    // Release the events
+    CFRelease(click_down);
+    CFRelease(click_up);
 
     #elif __FreeBSD__
 
@@ -127,7 +150,28 @@ void mouseRightClick() {
 
     #elif __APPLE__ || __MACH__
 
+    CGEventRef event = CGEventCreate(nil);//supposedly gets the mouse position according to https://stackoverflow.com/questions/2262516/getting-global-mouse-position-in-mac-os-x
+    CGPoint loc = CGEventGetLocation(event);
+    CFRelease(event);
 
+    CGEventRef click_down = CGEventCreateMouseEvent(
+    	NULL, kCGEventRightMouseDown,
+    	loc,
+    	kCGMouseButtonLeft
+  	);
+
+    CGEventRef click_up = CGEventCreateMouseEvent(
+    	NULL, kCGEventRightMouseUp,
+    	loc,
+    	kCGMouseButtonLeft
+  	);
+
+    CGEventPost(kCGHIDEventTap, click_down);
+    CGEventPost(kCGHIDEventTap, click_up);
+
+    // Release the events
+    CFRelease(click_down);
+    CFRelease(click_up);
 
     #elif __FreeBSD__
 

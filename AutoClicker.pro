@@ -26,7 +26,7 @@ win32 {#remember to add the qt dlls
  }
 
 macx {
-     
+     QMAKE_CXXFLAGS += -framework ApplicationServices
 }
 
 unix:!macx {
